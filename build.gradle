@@ -25,6 +25,9 @@ dependencies {
     testCompile "junit:junit:4.12"
     implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.bouncycastle:bcprov-ext-jdk15to18:1.67'
+	implementation 'org.fusesource.leveldbjni:leveldbjni-all:1.8'
+
    	testImplementation('org.springframework.boot:spring-boot-starter-test') {
    		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
    	}

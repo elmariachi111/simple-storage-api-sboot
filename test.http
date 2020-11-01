@@ -1,0 +1,18 @@
+POST http://localhost:8080/person/
+Content-Type: application/json
+
+{
+  "name": "stefan",
+  "age": 42,
+  "role": "ADMIN"
+}
+
+###
+
+GET http://localhost:8080/person/c58c462c220580e4eb38072f046a1566c1ff5ee11fb3de6115c436132b78fefa
+Content-Type: application/json
+
+###
+
+GET http://localhost:8080/person/
+Content-Type: application/json
