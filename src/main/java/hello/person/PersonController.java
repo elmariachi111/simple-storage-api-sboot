@@ -1,5 +1,7 @@
 package hello.person;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,12 @@ public class PersonController {
 	@GetMapping("/{personHash}")
 	public Person getPerson(@PathVariable("personHash") String personHash) {
 
-		Person p = this.personService.getPerson(personHash);
+		Person p;
+		try {
+			p = this.personService.getPerson(personHash);
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "when recovering person", e);
+		}
 		return p;
 	}
 

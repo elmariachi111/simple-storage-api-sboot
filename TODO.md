@@ -1,10 +1,4 @@
-add a PersonFactory service bean
-
 add logging
-
-accept a name / age / Role JSON
-
-persist to cbor byte array
 
 store in leveldb
 
