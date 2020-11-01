@@ -1,10 +1,10 @@
-package hello;
+package hello.person;
 
 public class Person {
 
     String name;
 
-    Integer age;
+    long age;
 
     Role role;
 
@@ -16,20 +16,20 @@ public class Person {
         this.name = name;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
     }
 
 }
