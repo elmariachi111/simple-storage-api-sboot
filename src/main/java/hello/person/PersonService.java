@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersonService {
 
-    private int instance = 0;
-
     private HashMap<String, byte[]> persons;
 
     private MessageDigest digest;
@@ -35,9 +33,7 @@ public class PersonService {
     private ObjectMapper cborMapper;
 
     PersonService() throws NoSuchAlgorithmException, IOException {
-        this.instance = 1;
-        this.persons = new HashMap<String, byte[]>(20);
-        // this.digest = MessageDigest.getInstance("SHA3-256");
+
         this.digest = new Keccak.Digest256();
 
         CBORFactory f = new CBORFactory();
@@ -46,11 +42,6 @@ public class PersonService {
         Options options = new Options();
         options.createIfMissing(true);
         this.db = factory.open(new File(".leveldb"), options);
-    }
-
-    public String getServiceValue() {
-        this.instance++;
-        return "service value " + this.instance;
     }
 
     public String addPerson(Person person) throws JsonProcessingException {
@@ -64,15 +55,14 @@ public class PersonService {
 
         this.persons.put(hexHash, cborPerson);
 
+        this.db.put(hash, cborPerson);
         return hexHash;
     }
 
     public Person getPerson(String hash) throws JsonParseException, JsonMappingException, IOException {
-
-        byte[] cborData = this.persons.get(hash);
+        byte[] key = Hex.decode(hash);
+        byte[] cborData = this.db.get(key);
         Person p = this.cborMapper.readValue(cborData, Person.class);
-
-        System.out.println(p.name);
         return p;
     }
 }
