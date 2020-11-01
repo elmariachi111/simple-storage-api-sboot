@@ -1,11 +1,13 @@
 package hello.person;
 
+import static org.fusesource.leveldbjni.JniDBFactory.factory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,15 +18,12 @@ import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import org.bouncycastle.jcajce.provider.digest.Keccak;
 import org.bouncycastle.util.encoders.Hex;
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
-import static org.fusesource.leveldbjni.JniDBFactory.*;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService {
-
-    private HashMap<String, byte[]> persons;
 
     private MessageDigest digest;
 
@@ -33,7 +32,6 @@ public class PersonService {
     private ObjectMapper cborMapper;
 
     PersonService() throws NoSuchAlgorithmException, IOException {
-
         this.digest = new Keccak.Digest256();
 
         CBORFactory f = new CBORFactory();
@@ -44,6 +42,19 @@ public class PersonService {
         this.db = factory.open(new File(".leveldb"), options);
     }
 
+    public String[] all() {
+        DBIterator iterator = this.db.iterator();
+        ArrayList<String> res = new ArrayList<String>();
+
+        for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+            byte[] key = iterator.peekNext().getKey();
+
+            res.add(new String(Hex.encode(key)));
+        }
+
+        return res.toArray(new String[0]);
+    }
+
     public String addPerson(Person person) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -52,10 +63,8 @@ public class PersonService {
         String hexHash = new String(Hex.encode(hash));
 
         byte[] cborPerson = this.cborMapper.writeValueAsBytes(person);
-
-        this.persons.put(hexHash, cborPerson);
-
         this.db.put(hash, cborPerson);
+
         return hexHash;
     }
 

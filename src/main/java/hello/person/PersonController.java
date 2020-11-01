@@ -31,12 +31,9 @@ public class PersonController {
 	private PersonService personService;
 
 	@GetMapping("/")
-	public Person index() {
-		Person p = new Person();
-		p.age = 42;
-		p.name = "foo";
-		p.role = Role.GREENHORN;
-		return p;
+	public String[] index() {
+		String[] allKeys = this.personService.all();
+		return allKeys;
 	}
 
 	@GetMapping("/{personHash}")
